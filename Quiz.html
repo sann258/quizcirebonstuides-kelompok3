@@ -427,7 +427,7 @@
 
     function verifyToken() {
       const token = tokenInput.value.trim();
-      if (token === 'CIREBON2023') {
+      if (token === 'CIREBON2024') {
         tokenContainer.classList.add('hide');
         rulesContainer.classList.remove('hide');
       } else {
@@ -662,7 +662,7 @@
 
     resetCodeButton.addEventListener('click', () => {
       const enteredCode = resetCodeInput.value.trim();
-      if (enteredCode === 'RESET123') {
+      if (enteredCode === 'RESET') {
         resetQuiz();
         alert('Quiz telah direset. Anda dapat mengambil quiz lagi.');
       } else {
