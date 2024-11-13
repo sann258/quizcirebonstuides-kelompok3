@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Trading Quiz - Cirebon Studies</title>
+  <meta property="og:title" content="Crypto Trading Quiz - Cirebon Studies">
+  <meta property="og:url" content="https://myportfolio.vercel.app/">
+  <meta property="og:description" content="Uji pengetahuan kamu tentang Studi Cirebon dalam kuis bertema kripto ini!">
+  <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqo_EQJKSEslo9GFhkfQOKda0RcsAgbdvC0r9nRcyP8bNuUr8c9K0f9Zg&s=10">
+  <link rel="icon" type="image/png" sizes="64x64" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqo_EQJKSEslo9GFhkfQOKda0RcsAgbdvC0r9nRcyP8bNuUr8c9K0f9Zg&s=10">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0a0e17;
+      --text-color: #e0e0e0;
+      --primary-color: #4caf50;
+      --secondary-color: #ff9800;
+      --accent-color: #2196f3;
+      --error-color: #f44336;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'IBM Plex Mono', monospace;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 750px;
+      margin: 20px auto;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .trading-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.1;
+    }
+    
+    .content {
+      position: relative;
+      z-index: 1;
+      background: rgba(10, 14, 23, 0.8);
+      padding: 30px;
+      border-radius: 10px;
+      max-height: 80vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #candlestick-chart {
+      width: 100%;
+      height: 200px;
+      margin-bottom: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px var(--primary-color);
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: var(--bg-color);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .hide {
+      display: none;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--primary-color);
+      border-radius: 5px;
+      color: var(--text-color);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .question {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .option {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .option:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+
+    #timer {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+      color: var(--accent-color);
+    }
+
+    .feedback {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .feedback.correct {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: var(--primary-color);
+    }
+
+    .feedback.incorrect {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: var(--error-color);
+    }
+
+    #result {
+      text-align: center;
+    }
+
+    .crypto-symbol {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+
+    .money-rain {
+      position: fixed;
+      top: -50px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .money {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234caf50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/></svg>');
+      background-size: contain;
+      opacity: 0.5;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .options {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="trading-background"></div>
+  <div class="money-rain"></div>
+  <div class="container">
+    <h1>Crypto Trading Quiz - Cirebon Studies</h1>
+    <canvas id="candlestick-chart"></canvas>
+    <div id="groupMembersContainer">
+      <h2>Anggota Kelompok:</h2>
+      <ul>
+        <li>Azzahra khairunisa.R (2482110015)</li>
+        <li>Nabila (2482110011)</li>
+        <li>Vanessa Enjelica (2482110014)</li>
+        <li>Jasmine Khofifah (2482110013)</li>
+        <li>Hasannul imam (2482110012)</li>
+      </ul>
+      <button id="okButton" class="button">Mulai</button>
+    </div>
+    <div id="tokenContainer" class="hide">
+      <input type="text" id="tokenInput" placeholder="Masukkan token untuk memulai" required>
+      <button id="tokenButton" class="button">Kirim</button>
+    </div>
+    <div id="rulesContainer" class="hide">
+      <h2>Peraturan Quiz</h2>
+      <ul>
+        <li>Patuh sama waktu.</li>
+        <li>Setiap soal punya waktu 30 detik ya dek.</li>
+        <li>Tidak ada main ampun.</li>
+        <li>Ketahuan curang, ku ajak by one.</li>
+        <li>Ikuti peraturan ya dek.</li>
+        <li>Gausah belagu kalo benernya banyak🗿.</li>
+        <li>Baca basmallah dulu dek.</li>
+        <li>Kerjain dek!!!.</li>
+      </ul>
+      <button id="understandButton" class="button">Shap Ketua</button>
+    </div>
+    <div id="nameContainer" class="hide">
+      <input type="text" id="nameInput" placeholder="Masukkan nama anda" required>
+      <button id="startButton" class="button">Start</button>
+    </div>
+    <div id="notification" class="hide"></div>
+    <div id="timer" class="hide"></div>
+    <div id="quiz" class="hide"></div>
+    <div id="feedback" class="feedback hide"></div>
+    <div id="result" class="hide"></div>
+    <button id="submit" class="button hide">Kirim Jawaban</button>
+    <button id="shareWhatsApp" class="button hide">Share ke WhatsApp</button>
+    <div id="resetContainer" class="hide">
+      <input type="text" id="resetCodeInput" placeholder="Masukkan kode reset">
+      <button id="resetCodeButton" class="button">Reset Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: '1. Siapa pendiri Kesultanan Kanoman?',
+        options: ['Raden Wahidin', 'Sultan Ageng Tirtayasa', 'Raden Walangsungsang', 'Sunan Gunung Jati'],
+        answer: 'Raden Walangsungsang'
+      },
+      {
+        question: '2. Kapan Kesultanan Kanoman didirikan?',
+        options: ['1700', '1680', '1570', '1527'],
+        answer: '1527'
+      },
+      {
+        question: '3. Kesultanan Kanoman merupakan pecahan dari kesultanan mana?',
+        options: ['Jawab yang ini', 'Mataram', 'Banten', 'Cirebon'],
+        answer: 'Cirebon'
+      },
+      {
+        question: '4. Sultan pertama Kesultanan Kanoman adalah?',
+        options: ['Sunan Gunung Jati', 'Sultan Haji Wahid', 'Sultan Ageng Tirtayasa', 'Sultan Anom I'],
+        answer: 'Sultan Anom I'
+      },
+      {
+        question: '5. Apa nama masjid utama di Kesultanan Kanoman?',
+        options: ['Masjid Agung Banten', 'Masjid Jami Cirebon', 'Masjid Kanoman', 'Masjid Wahidin'],
+        answer: 'Masjid Kanoman'
+      },
+      {
+        question: '6. Apa yang menyebabkan perpecahan Kesultanan Cirebon menjadi Kanoman dan Kasepuhan?',
+        options: ['Perebutan kekuasaan', 'Invasi Belanda', 'Perang Saudara', 'Perjanjian Honda GL'],
+        answer: 'Perebutan kekuasaan'
+      },
+      {
+        question: '7. Siapa yang menjadi penguasa setelah Sultan Anom I?',
+        options: ['Sultan Anom II', 'Pangeran Wahid', 'Pangeran Ratu', 'Sultan Ageng Tirtayasa'],
+        answer: 'Sultan Anom II'
+      },
+      {
+        question: '8. Apa peran Kesultanan Kanoman dalam perdagangan?',
+        options: ['Pusat militer', 'Pusat pendidikan', 'Jalur perdagangan penting', 'Pusat penyebaran Islam'],
+        answer: 'Jalur perdagangan penting'
+      },
+      {
+        question: '9. Kesultanan Kanoman terletak di daerah mana?',
+        options: ['Jawa Timur', 'Jawa Barat', 'Jawa Galon', 'Jawa Tengah'],
+        answer: 'Jawa Barat'
+      },
+      {
+        question: '10. Kapan Kesultanan Kanoman mengalami kemunduran?',
+        options: ['Abad ke-15', 'Abad ke-16', 'Abad ke-17', 'Abad ke-18'],
+        answer: 'Abad ke-17'
+      }
+    ];
+
+    const groupMembersContainer = document.getElementById('groupMembersContainer');
+    const okButton = document.getElementById('okButton');
+    const tokenContainer = document.getElementById('tokenContainer');
+    const tokenInput = document.getElementById('tokenInput');
+    const tokenButton = document.getElementById('tokenButton');
+    const rulesContainer = document.getElementById('rulesContainer');
+    const understandButton = document.getElementById('understandButton');
+    const nameContainer = document.getElementById('nameContainer');
+    const nameInput = document.getElementById('nameInput');
+    const startButton = document.getElementById('startButton');
+    const notification = document.getElementById('notification');
+    const timerElement = document.getElementById('timer');
+    const quizContainer = document.getElementById('quiz');
+    const feedbackElement = document.getElementById('feedback');
+    const resultContainer = document.getElementById('result');
+    const submitButton = document.getElementById('submit');
+    const shareWhatsAppButton = document.getElementById('shareWhatsApp');
+    const resetContainer = document.getElementById('resetContainer');
+    const resetCodeInput = document.getElementById('resetCodeInput');
+    const resetCodeButton = document.getElementById('resetCodeButton');
+
+    let currentQuestion = 0;
+    let score = 0;
+    let incorrectAnswers = [];
+    let timer;
+    let timeLeft = 30;
+    let quizCompleted = false;
+
+    // Candlestick chart
+    const canvas = document.getElementById('candlestick-chart');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+
+    function drawCandlestick(x, open, close, high, low) {
+      const candleWidth = 8;
+      const isGreen = close > open;
+
+      ctx.strokeStyle = isGreen ? '#4caf50' : '#f44336';
+      ctx.fillStyle = isGreen ? '#4caf50' : '#f44336';
+
+      // Draw the wick
+      ctx.beginPath();
+      ctx.moveTo(x, high);
+      ctx.lineTo(x, low);
+      ctx.stroke();
+
+      // Draw the body
+      ctx.fillRect(x - candleWidth / 2, open, candleWidth, close - open);
+    }
+
+    function drawChart() {
+      resizeCanvas();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const candleCount = 20;
+      const candleSpacing = canvas.width / candleCount;
+
+      for (let i = 0; i < candleCount; i++) {
+        const x = i * candleSpacing + candleSpacing / 2;
+        const open = Math.random() * canvas.height;
+        const close = Math.random() * canvas.height;
+        const high = Math.max(open, close) - Math.random() * 20;
+        const low = Math.min(open, close) + Math.random() * 20;
+
+        drawCandlestick(x, open, close, high, low);
+      }
+    }
+
+    window.addEventListener('resize', drawChart);
+    drawChart();
+
+    // Trading background animation
+    function createTradingBackground() {
+      const background = document.querySelector('.trading-background');
+      const symbols = ['BTC', 'ETH', 'LTC', 'XRP', 'ADA', 'DOT', 'LINK', 'XLM', 'DOGE', 'UNI'];
+      const colors = ['#4caf50', '#f44336', '#2196f3', '#ff9800', '#9c27b0', '#00bcd4', '#ffeb3b', '#795548', '#607d8b', '#e91e63'];
+
+      for (let i = 0; i < 50; i++) {
+        const symbol = document.createElement('div');
+        symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        symbol.style.color = colors[Math.floor(Math.random() * colors.length)];
+        symbol.style.position = 'absolute';
+        symbol.style.left = `${Math.random() * 100}%`;
+        symbol.style.top = `${Math.random() * 100}%`;
+        symbol.style.fontSize = `${Math.random() * 20 + 10}px`;
+        symbol.style.opacity = '0.5';
+        background.appendChild(symbol);
+      }
+    }
+
+    createTradingBackground();
+
+    // Money rain animation
+    function createMoneyRain() {
+      const moneyRain = document.querySelector('.money-rain');
+      const moneyCount = 30;
+
+      for (let i = 0; i < moneyCount; i++) {
+        const money = document.createElement('div');
+        money.classList.add('money');
+        money.style.left = `${Math.random() * 100}%`;
+        money.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        money.style.animationDelay = `${Math.random() * 5}s`;
+        moneyRain.appendChild(money);
+      }
+    }
+
+    createMoneyRain();
+
+    // Quiz logic
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function showTokenInput() {
+      groupMembersContainer.classList.add('hide');
+      tokenContainer.classList.remove('hide');
+    }
+
+    function verifyToken() {
+      const token = tokenInput.value.trim();
+      if (token === 'CIREBON2023') {
+        tokenContainer.classList.add('hide');
+        rulesContainer.classList.remove('hide');
+      } else {
+        alert('Token ngga valid, NT DEK🗿🙏🏻.');
+      }
+    }
+
+    function showNameInput() {
+      rulesContainer.classList.add('hide');
+      nameContainer.classList.remove('hide');
+    }
+
+    function startQuiz() {
+      const name = nameInput.value.trim();
+      if (name === '') {
+        alert('Masukin nama dulu dong kids🗿.');
+        return;
+      }
+      nameContainer.classList.add('hide');
+      notification.textContent = 'Quiz bakalan dimulai 5 detik. Gass!';
+      notification.classList.remove('hide');
+      setTimeout(() => {
+        notification.classList.add('hide');
+        timerElement.classList.remove('hide');
+        quizContainer.classList.remove('hide');
+        submitButton.classList.remove('hide');
+        displayQuestion();
+        startTimer();
+      }, 5000);
+    }
+
+    function startTimer() {
+      timeLeft = 30;
+      updateTimerDisplay();
+      timer = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          moveToNextQuestion();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      timerElement.textContent = `Waktu tersisa: ${timeLeft} detik`;
+    }
+
+    function moveToNextQuestion() {
+      const selectedOption = document.querySelector('input[name="quiz"]:checked');
+      if (selectedOption) {
+        checkAnswer();
+      } else {
+        showFeedback(false);
+        incorrectAnswers.push({
+          question: quizData[currentQuestion].question,
+          incorrectAnswer: 'Tidak ada jawaban',
+          correctAnswer: quizData[currentQuestion].answer,
+        });
+        setTimeout(() => {
+          currentQuestion++;
+          if (currentQuestion < quizData.length) {
+            displayQuestion();
+            startTimer();
+          } else {
+            displayResult();
+          }
+        }, 2000);
+      }
+    }
+
+    function checkAnswer() {
+      clearInterval(timer);
+      const selectedOption = document.querySelector('input[name="quiz"]:checked');
+      if (selectedOption) {
+        const answer = selectedOption.value;
+        const isCorrect = answer === quizData[currentQuestion].answer;
+        showFeedback(isCorrect);
+        if (isCorrect) {
+          score++;
+        } else {
+          incorrectAnswers.push({
+            question: quizData[currentQuestion].question,
+            incorrectAnswer: answer,
+            correctAnswer: quizData[currentQuestion].answer,
+          });
+        }
+        setTimeout(() => {
+          currentQuestion++;
+          if (currentQuestion < quizData.length) {
+            displayQuestion();
+            startTimer();
+          } else {
+            displayResult();
+          }
+        }, 2000);
+      } else {
+        alert('Silakan pilih jawaban terlebih dahulu sebelum melanjutkan.');
+      }
+    }
+
+    function showFeedback(isCorrect) {
+      feedbackElement.textContent = isCorrect ? 'Anjaaay! kasih paham puh🙏🏻!' : 'Awokawokawok! Tutor Dek🗿!';
+      feedbackElement.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+      feedbackElement.classList.remove('hide');
+      setTimeout(() => {
+        feedbackElement.classList.add('hide');
+      }, 2000);
+    }
+
+    function displayQuestion() {
+      const questionData = quizData[currentQuestion];
+
+      const questionElement = document.createElement('div');
+      questionElement.className = 'question';
+      questionElement.innerHTML = questionData.question;
+
+      const optionsElement = document.createElement('div');
+      optionsElement.className = 'options';
+
+      const shuffledOptions = [...questionData.options];
+      shuffleArray(shuffledOptions);
+
+      for (let i = 0; i < shuffledOptions.length; i++) {
+        const option = document.createElement('label');
+        option.className = 'option';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'quiz';
+        radio.value = shuffledOptions[i];
+
+        const optionText = document.createTextNode(shuffledOptions[i]);
+
+        option.appendChild(radio);
+        option.appendChild(optionText);
+        optionsElement.appendChild(option);
+      }
+
+      quizContainer.innerHTML = '';
+      quizContainer.appendChild(questionElement);
+      quizContainer.appendChild(optionsElement);
+
+      submitButton.disabled = true;
+    }
+
+    function enableSubmitButton() {
+      submitButton.disabled = false;
+    }
+
+    function displayResult() {
+      quizCompleted = true;
+      localStorage.setItem('quizCompleted', 'true');
+      quizContainer.style.display = 'none';
+      submitButton.style.display = 'none';
+      timerElement.style.display = 'none';
+      shareWhatsAppButton.style.display = 'inline-block';
+      resultContainer.innerHTML = `
+        <h2>${nameInput.value}, nih liat hasil:</h2>
+        <div class="crypto-symbol">₿</div><span>Skor: ${score} dari ${quizData.length}</span><br>
+        <div class="crypto-symbol">Ξ</div><span>Jawaban Benar: ${score}</span><br>
+        <div class="crypto-symbol">Ł</div><span>Jawaban Salah: ${quizData.length - score}</span>
+        <h3>Riwayat Ngisi:</h3>
+        ${quizData.map((q, index) => `
+          <p>
+            <strong>Trade #${index + 1}:</strong> ${q.question}<br>
+            <span class="${incorrectAnswers.some(ia => ia.question === q.question) ? 'incorrect' : 'correct'}">
+              Jawaban Kamu: ${incorrectAnswers.find(ia => ia.question === q.question)?.incorrectAnswer || q.answer}
+            </span><br>
+            <span class="correct">Jawaban yang Benar: ${q.answer}</span>
+          </p>
+        `).join('')}
+      `;
+      resultContainer.classList.remove('hide');
+      resetContainer.classList.remove('hide');
+    }
+
+    function shareToWhatsApp() {
+      const name = nameInput.value;
+      const message = `${name} telah menyelesaikan Quiz dengan nilai: ${score} dari ${quizData.length}. Benar: ${score}, Salah: ${quizData.length - score}`;
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+
+    function showCompletionNotification() {
+      notification.textContent = 'Anda sudah menyelesaikan Quiz hari ini!';
+      notification.classList.remove('hide');
+      groupMembersContainer.classList.add('hide');
+      resetContainer.classList.remove('hide');
+    }
+
+    function resetQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      incorrectAnswers = [];
+      quizCompleted = false;
+      localStorage.removeItem('quizCompleted');
+      notification.classList.add('hide');
+      groupMembersContainer.classList.remove('hide');
+      tokenContainer.classList.add('hide');
+      rulesContainer.classList.add('hide');
+      nameContainer.classList.add('hide');
+      resultContainer.classList.add('hide');
+      shareWhatsAppButton.classList.add('hide');
+      resetContainer.classList.add('hide');
+      tokenInput.value = '';
+      nameInput.value = '';
+    }
+
+    okButton.addEventListener('click', showTokenInput);
+    tokenButton.addEventListener('click', verifyToken);
+    understandButton.addEventListener('click', showNameInput);
+    startButton.addEventListener('click', startQuiz);
+    submitButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!submitButton.disabled && !quizCompleted) {
+        checkAnswer();
+      }
+    });
+    shareWhatsAppButton.addEventListener('click', shareToWhatsApp);
+    quizContainer.addEventListener('change', enableSubmitButton);
+
+    resetCodeButton.addEventListener('click', () => {
+      const enteredCode = resetCodeInput.value.trim();
+      if (enteredCode === 'RESET123') {
+        resetQuiz();
+        alert('Quiz kamu telah direset. Anda dapat memulai kembali:).');
+      } else {
+        alert('Kode reset tidak valid.');
+      }
+    });
+
+    // Prevent accidental page refresh
+    window.addEventListener('beforeunload', (event) => {
+      if (!quizCompleted) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    });
+
+    // Check if quiz has been completed before
+    if (localStorage.getItem('quizCompleted') === 'true') {
+      showCompletionNotification();
+    }
+  </script>
+</body>
+</html>
