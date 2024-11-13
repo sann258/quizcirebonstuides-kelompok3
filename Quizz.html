@@ -451,7 +451,7 @@
 
     function verifyToken() {
       const token = tokenInput.value.trim();
-      if (token === 'CIREBON') {
+      if (token === 'CIREBON3') {
         tokenContainer.classList.add('hide');
         rulesContainer.classList.remove('hide');
       } else {
@@ -676,7 +676,7 @@
 
     resetCodeButton.addEventListener('click', () => {
       const enteredCode = resetCodeInput.value.trim();
-      if (enteredCode === 'RESET') {
+      if (enteredCode === 'HASAN') {
         resetQuiz();
         alert('Quiz kamu telah direset. Anda dapat memulai kembali:).');
       } else {
