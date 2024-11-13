@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Quiz-Cirebon Studies</title>
+  <meta property="og:title" content="Crypto Quiz mata Kuliah Cirebon Studies">
+  <meta property="og:url" content="https://myportfolio.vercel.app/">
+  <meta property="og:description" content="Tema Crypto-Quiz Mata Kuliah Cirebon Studies">
+  <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqo_EQJKSEslo9GFhkfQOKda0RcsAgbdvC0r9nRcyP8bNuUr8c9K0f9Zg&s=10">
+  <link rel="icon" type="image/png" sizes="64x64" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqo_EQJKSEslo9GFhkfQOKda0RcsAgbdvC0r9nRcyP8bNuUr8c9K0f9Zg&s=10">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #00ff00;
+      --secondary-color: #ff6600;
+      --background-color: #0a0e17;
+      --text-color: #ffffff;
+      --chart-color: #4caf50;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      background: rgba(10, 14, 23, 0.8);
+      padding: 30px;
+      border-radius: 10px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-size: 2rem;
+      text-shadow: 0 0 10px var(--primary-color);
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: var(--primary-color);
+      color: var(--background-color);
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px var(--primary-color);
+    }
+
+    .button:hover {
+      background-color: var(--secondary-color);
+      box-shadow: 0 0 15px var(--secondary-color);
+      transform: translateY(-2px);
+    }
+
+    .hide {
+      display: none;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid var(--primary-color);
+      border-radius: 5px;
+      font-size: 16px;
+      background-color: rgba(0, 255, 0, 0.1);
+      color: var(--text-color);
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    .question {
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+
+    .question-image {
+      width: 100%;
+      max-height: 230px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    }
+
+    .options {
+      margin-bottom: 20px;
+    }
+
+    .option {
+      display: block;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 10px;
+      border: 1px solid var(--primary-color);
+      border-radius: 5px;
+      background-color: rgba(0, 255, 0, 0.1);
+    }
+
+    .option:hover {
+      background-color: rgba(0, 255, 0, 0.2);
+      transform: translateX(5px);
+    }
+
+    #timer {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+    }
+
+    .feedback {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .feedback.correct {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+    }
+
+    .feedback.incorrect {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: #f44336;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        width: 95%;
+        padding: 15px;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .button {
+        font-size: 14px;
+        padding: 10px 20px;
+      }
+
+      h1, h2 {
+        font-size: 1.5rem;
+      }
+    }
+
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--background-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loader {
+      width: 50px;
+      height: 50px;
+      border: 3px solid var(--primary-color);
+      border-top: 3px solid var(--secondary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .crypto-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.1;
+      z-index: -1;
+    }
+
+    .crypto-chart {
+      stroke: var(--chart-color);
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .crypto-symbols {
+      position: absolute;
+      font-size: 24px;
+      color: var(--primary-color);
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div class="loader"></div>
+  </div>
+  <div class="container">
+    <div class="crypto-background">
+      <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path class="crypto-chart" d="M0,50 Q25,40 50,60 T100,50"></path>
+        <path class="crypto-chart" d="M0,70 Q35,50 70,80 T100,70"></path>
+      </svg>
+      <div class="crypto-symbols" style="top: 10%; left: 5%;">₿</div>
+      <div class="crypto-symbols" style="top: 30%; right: 10%;">Ξ</div>
+      <div class="crypto-symbols" style="bottom: 15%; left: 15%;">Ł</div>
+      <div class="crypto-symbols" style="bottom: 40%; right: 20%;">Ð</div>
+    </div>
+    <div class="content">
+      <h1>Crypto Quiz Cirebon Studies</h1>
+      <div id="groupMembersContainer">
+        <h2>Anggota Kelompok:</h2>
+        <ul>
+          <li>Nama Anggota 1 (NIM: 12345678)</li>
+          <li>Nama Anggota 2 (NIM: 23456789)</li>
+          <li>Nama Anggota 3 (NIM: 34567890)</li>
+          <li>Nama Anggota 4 (NIM: 45678901)</li>
+          <li>Nama Anggota 5 (NIM: 56789012)</li>
+        </ul>
+        <button id="okButton" class="button">Oke</button>
+      </div>
+      <div id="tokenContainer" class="hide">
+        <input type="text" id="tokenInput" placeholder="Masukkan token untuk memulai" required>
+        <button id="tokenButton" class="button">Verifikasi Token</button>
+      </div>
+      <div id="rulesContainer" class="hide">
+        <h2>Peraturan Quiz</h2>
+        <ul>
+          <li>Jawab semua pertanyaan dengan teliti.</li>
+          <li>Anda memiliki 30 detik untuk setiap pertanyaan.</li>
+          <li>Tidak ada penalti untuk jawaban yang salah.</li>
+          <li>Dilarang bertindak tidak jujur</li>
+          <li>Baca dulu Basmallah</li>
+          <li>Selamat mengerjakan!</li>
+        </ul>
+        <button id="understandButton" class="button">Saya Mengerti</button>
+      </div>
+      <div id="nameContainer" class="hide">
+        <input type="text" id="nameInput" placeholder="Masukkan nama anda" required>
+        <button id="startButton" class="button">Mulai</button>
+      </div>
+      <div id="notification" class="hide"></div>
+      <div id="timer" class="hide"></div>
+      <div id="quiz" class="hide"></div>
+      <div id="feedback" class="feedback hide"></div>
+      <div id="result" class="result hide"></div>
+      <button id="submit" class="button hide">Kirim</button>
+      <button id="shareWhatsApp" class="button hide">Share ke WhatsApp</button>
+      <div id="resetContainer" class="hide">
+        <input type="text" id="resetCodeInput" placeholder="Masukkan kode reset">
+        <button id="resetCodeButton" class="button">Reset Quiz</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const quizData = [
+      {
+        question: '1. Kemunculan wayang pada mulanya kerap dikaitkan terhadap roh leluhur yang disebut?',
+        options: ['Taehyung', 'yahayuk', 'yhang', 'hyang'],
+        answer: 'hyang',
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpmiUijDVVthGqgsMfD5DvQkdeloB9B1QnboPn9w_2Sxzc8Qdnlioz3NQ&s=10'
+      },
+      {
+        question: '2. Wayang sudah ada sejak tahun kapan?',
+        options: ['1000', '1100', '1300', '1500'],
+        answer: '1000',
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTGEx79_wXWCDANpyRLIv28-9HF8h7HZa9tQ&usqp=CAU'
+      },
+      {
+        question: '3. Arti lain dari kata wayang adalah?',
+        options: ['Yan yan', 'Nay nay', 'Ayan ayan', 'Yana yana'],
+        answer: 'Ayan ayan',
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhltJmNj50WWoSoqsDPEVDs8-CDrxhg0RREQ&usqp=CAU'
+      },
+      {
+        question: '4. Gaya Leran sering disebut juga dengan gaya?',
+        options: ['Gegesak', 'Gegesok', 'Gegesek', 'Gegesik'],
+        answer: 'Gegesik',
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLth22ebVYr3aoCH4uVablpDvHQX5EsTBkQg&usqp=CAU'
+      },
+      {
+        question: '5. Gaya Leran diwakili oleh berapa dalang?',
+        options: ['10', '11', '12', '13'],
+        answer: '12',
+        image: 'https://stickercommunity.com/uploads/main/25-08-2023-09-24-59borvl-sticker7.webp'
+      },
+      {
+        question: '6. Gaya pedalangan wayang kulit yang terkenal adalah gaya?',
+        options: ['Barat', 'Timur', 'Selatan', 'Utara'],
+        answer: 'Selatan',
+        image: 'https://stickercommunity.com/uploads/main/25-08-2023-09-24-592syf6-sticker0.webp'
+      },
+      {
+        question: '7. Pusat pertunjukan Wayang gaya Pedalangan berada di?',
+        options: ['Padalarang', 'Gempol', 'Karawang', 'Palimanan & Gempol'],
+        answer: 'Palimanan & Gempol',
+        image: 'https://stickercommunity.com/uploads/main/25-08-2023-09-24-59hzdxu-sticker9.webp'
+      },
+      {
+        question: '8. Gaya pedalangan Kulonan terkenal diKabupaten?',
+        options: ['Plered', 'palimanan', 'Subang', 'Subang & Karawang'],
+        answer: 'Subang & Karawang',
+        image: 'https://stickercommunity.com/uploads/main/25-08-2023-09-24-597ln6a-sticker16.webp'
+      },
+      {
+        question: '9. Wayang Kulit dalam tradisi Sloan memuat tokoh-tokoh seperti?',
+        options: ['Jakariyyah', 'Abdillah', 'Abdullah', 'Cepot'],
+        answer: 'Abdullah',
+        image: 'https://stickercommunity.com/uploads/main/25-08-2023-09-24-59owz1r-sticker17.webp'
+      },
+      {
+        question: '10. Festival Sloan merupakan salah satu perayaan Tahun Baru dalam penanggalan Jawa dan jatuh pada bulan?',
+        options: ['Sapar', 'Mulud', 'Sura', 'Ruwah'],
+        answer: 'Sura',
+        image: 'https://stickercommunity.com/uploads/main/25-08-2023-09-24-59b9adi-sticker6.webp'
+      }
+    ];
+
+    const groupMembersContainer = document.getElementById('groupMembersContainer');
+    const okButton = document.getElementById('okButton');
+    const tokenContainer = document.getElementById('tokenContainer');
+    const tokenInput = document.getElementById('tokenInput');
+    const tokenButton = document.getElementById('tokenButton');
+    const rulesContainer = document.getElementById('rulesContainer');
+    const understandButton = document.getElementById('understandButton');
+    const nameContainer = document.getElementById('nameContainer');
+    const nameInput = document.getElementById('nameInput');
+    const startButton = document.getElementById('startButton');
+    const notification = document.getElementById('notification');
+    const timerElement = document.getElementById('timer');
+    const quizContainer = document.getElementById('quiz');
+    const feedbackElement = document.getElementById('feedback');
+    const resultContainer = document.getElementById('result');
+    const submitButton = document.getElementById('submit');
+    const shareWhatsAppButton = document.getElementById('shareWhatsApp');
+    const resetContainer = document.getElementById('resetContainer');
+    const resetCodeInput = document.getElementById('resetCodeInput');
+    const resetCodeButton = document.getElementById('resetCodeButton');
+
+    let currentQuestion = 0;
+    let score = 0;
+    let incorrectAnswers = [];
+    let timer;
+    let timeLeft = 30;
+    let quizCompleted = false;
+
+    // Loading screen
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading').style.display = 'none';
+      }, 2000);
+    });
+
+    // Check if quiz has been completed before
+    if (localStorage.getItem('quizCompleted') === 'true') {
+      showCompletionNotification();
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function showTokenInput() {
+      groupMembersContainer.classList.add('hide');
+      tokenContainer.classList.remove('hide');
+    }
+
+    function verifyToken() {
+      const token = tokenInput.value.trim();
+      if (token === 'CIREBON2023') {
+        tokenContainer.classList.add('hide');
+        rulesContainer.classList.remove('hide');
+      } else {
+        alert('Token tidak valid. Silakan coba lagi.');
+      }
+    }
+
+    function showNameInput() {
+      rulesContainer.classList.add('hide');
+      nameContainer.classList.remove('hide');
+    }
+
+    function startQuiz() {
+      const name = nameInput.value.trim();
+      if (name === '') {
+        alert('Masukin nama dulu dong kids🗿.');
+        return;
+      }
+      nameContainer.classList.add('hide');
+      notification.textContent = 'Quiz akan dimulai dalam 3 detik. Siap-siap!';
+      notification.classList.remove('hide');
+      setTimeout(() => {
+        notification.classList.add('hide');
+        timerElement.classList.remove('hide');
+        quizContainer.classList.remove('hide');
+        submitButton.classList.remove('hide');
+        displayQuestion();
+        startTimer();
+      }, 3000);
+    }
+
+    function startTimer() {
+      timeLeft = 30;
+      updateTimerDisplay();
+      timer = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          moveToNextQuestion();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      timerElement.textContent = `Waktu tersisa: ${timeLeft} detik`;
+    }
+
+    function moveToNextQuestion() {
+      const selectedOption = document.querySelector('input[name="quiz"]:checked');
+      if (selectedOption) {
+        checkAnswer();
+      } else {
+        showFeedback(false);
+        incorrectAnswers.push({
+          question: quizData[currentQuestion].question,
+          incorrectAnswer: 'Tidak ada jawaban',
+          correctAnswer: quizData[currentQuestion].answer,
+        });
+        setTimeout(() => {
+          currentQuestion++;
+          if (currentQuestion < quizData.length) {
+            displayQuestion();
+            startTimer();
+          } else {
+            displayResult();
+          }
+        }, 2000);
+      }
+    }
+
+    function checkAnswer() {
+      clearInterval(timer);
+      const selectedOption = document.querySelector('input[name="quiz"]:checked');
+      if (selectedOption) {
+        const answer = selectedOption.value;
+        const isCorrect = answer === quizData[currentQuestion].answer;
+        showFeedback(isCorrect);
+        if (isCorrect) {
+          score++;
+        } else {
+          incorrectAnswers.push({
+            question: quizData[currentQuestion].question,
+            incorrectAnswer: answer,
+            correctAnswer: quizData[currentQuestion].answer,
+          });
+        }
+        setTimeout(() => {
+          currentQuestion++;
+          if (currentQuestion < quizData.length) {
+            displayQuestion();
+            startTimer();
+          } else {
+            displayResult();
+          }
+        }, 2000);
+      } else {
+        alert('Silakan pilih jawaban terlebih dahulu sebelum melanjutkan.');
+      }
+    }
+
+    function showFeedback(isCorrect) {
+      feedbackElement.textContent = isCorrect ? 'Benar!' : 'Salah!';
+      feedbackElement.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+      feedbackElement.classList.remove('hide');
+      setTimeout(() => {
+        feedbackElement.classList.add('hide');
+      }, 2000);
+    }
+
+    function displayQuestion() {
+      const questionData = quizData[currentQuestion];
+
+      const questionElement = document.createElement('div');
+      questionElement.className = 'question';
+      questionElement.innerHTML = questionData.question;
+
+      const imageElement = document.createElement('img');
+      imageElement.src = questionData.image;
+      imageElement.alt = `Image for question ${currentQuestion + 1}`;
+      imageElement.className = 'question-image';
+
+      const optionsElement = document.createElement('div');
+      optionsElement.className = 'options';
+
+      const shuffledOptions = [...questionData.options];
+      shuffleArray(shuffledOptions);
+
+      for (let i = 0; i < shuffledOptions.length; i++) {
+        const option = document.createElement('label');
+        option.className = 'option';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'quiz';
+        radio.value = shuffledOptions[i];
+
+        const optionText = document.createTextNode(shuffledOptions[i]);
+
+        option.appendChild(radio);
+        option.appendChild(optionText);
+        optionsElement.appendChild(option);
+      }
+
+      quizContainer.innerHTML = '';
+      quizContainer.appendChild(imageElement);
+      quizContainer.appendChild(questionElement);
+      quizContainer.appendChild(optionsElement);
+
+      submitButton.disabled = true;
+    }
+
+    function enableSubmitButton() {
+      submitButton.disabled = false;
+    }
+
+    function displayResult() {
+      quizCompleted = true;
+      localStorage.setItem('quizCompleted', 'true');
+      quizContainer.style.display = 'none';
+      submitButton.style.display = 'none';
+      timerElement.style.display = 'none';
+      shareWhatsAppButton.style.display = 'inline-block';
+      resultContainer.innerHTML = `
+        <h2>${nameInput.value}, skor Anda adalah ${score} dari ${quizData.length}!</h2>
+        <div class="answer-summary">
+          <h3>Ringkasan:</h3>
+          <p class="correct">Jawaban Benar: ${score}</p>
+          <p class="incorrect">Jawaban Salah: ${quizData.length - score}</p>
+        </div>
+        <div class="answer-details">
+          <h3>Hasil Detail:</h3>
+          ${quizData.map((q, index) => `
+            <p>
+              <strong>P${index + 1}:</strong> ${q.question}<br>
+              <span class="${incorrectAnswers.some(ia => ia.question === q.question) ? 'incorrect' : 'correct'}">
+                Jawaban Anda: ${incorrectAnswers.find(ia => ia.question === q.question)?.incorrectAnswer || q.answer}
+              </span><br>
+              <span class="correct">Jawaban Benar: ${q.answer}</span>
+            </p>
+          `).join('')}
+        </div>
+      `;
+      resultContainer.classList.remove('hide');
+      resetContainer.classList.remove('hide');
+    }
+
+    function shareToWhatsApp() {
+      const name = nameInput.value;
+      const message = `${name} telah menyelesaikan quiz dengan score ${score} dari ${quizData.length}. Benar: ${score}, Salah: ${quizData.length - score}`;
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+
+    function showCompletionNotification() {
+      notification.textContent = 'KAMU UDAH NGISI';
+      notification.classList.remove('hide');
+      groupMembersContainer.classList.add('hide');
+      resetContainer.classList.remove('hide');
+    }
+
+    function resetQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      incorrectAnswers = [];
+      quizCompleted = false;
+      localStorage.removeItem('quizCompleted');
+      notification.classList.add('hide');
+      groupMembersContainer.classList.remove('hide');
+      tokenContainer.classList.add('hide');
+      rulesContainer.classList.add('hide');
+      nameContainer.classList.add('hide');
+      resultContainer.classList.add('hide');
+      shareWhatsAppButton.classList.add('hide');
+      resetContainer.classList.add('hide');
+      tokenInput.value = '';
+      nameInput.value = '';
+    }
+
+    okButton.addEventListener('click', showTokenInput);
+    tokenButton.addEventListener('click', verifyToken);
+    understandButton.addEventListener('click', showNameInput);
+    startButton.addEventListener('click', startQuiz);
+    submitButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!submitButton.disabled && !quizCompleted) {
+        checkAnswer();
+      }
+    });
+    shareWhatsAppButton.addEventListener('click', shareToWhatsApp);
+    quizContainer.addEventListener('change', enableSubmitButton);
+
+    resetCodeButton.addEventListener('click', () => {
+      const enteredCode = resetCodeInput.value.trim();
+      if (enteredCode === 'RESET123') {
+        resetQuiz();
+        alert('Quiz telah direset. Anda dapat mengambil quiz lagi.');
+      } else {
+        alert('Kode reset tidak valid.');
+      }
+    });
+
+    // Prevent accidental page refresh
+    window.addEventListener('beforeunload', (event) => {
+      if (!quizCompleted) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    });
+  </script>
+</body>
+</html>
