@@ -182,6 +182,7 @@
 
         function showData() {
             const quizData = JSON.parse(localStorage.getItem('quizData')) || [];
+            quizData.sort((a, b) => b.score - a.score); // Sort by score from highest to lowest
             quizDataBody.innerHTML = '';
             quizData.forEach((data, index) => {
                 const row = `
@@ -214,6 +215,7 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const quizData = JSON.parse(localStorage.getItem('quizData')) || [];
+            quizData.sort((a, b) => b.score - a.score); // Sort by score from highest to lowest
             
             doc.autoTable({
                 head: [['No.', 'Nama', 'NIM', 'Kelas', 'Semester', 'Benar', 'Salah', 'Pelanggaran', 'Nilai', 'Waktu Pengiriman']],
