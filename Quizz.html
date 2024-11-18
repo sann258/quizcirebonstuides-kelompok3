@@ -282,7 +282,7 @@
         <div id="feedback" class="feedback hide"></div>
         <div id="result" class="hide"></div>
         <button id="submit" class="button hide">Kirim Jawaban</button>
-        <button id="sendResultBtn" class="button hide">Kirim</button>
+        <button id="sendResultBtn" class="button hide">Kirim Hasil</button>
         <div id="resetContainer" class="hide">
             <input type="text" id="resetCodeInput" placeholder="Masukkan kode reset">
             <button id="resetCodeButton" class="button">Reset Quiz</button>
@@ -661,7 +661,7 @@
             quizContainer.style.display = 'none';
             submitButton.style.display = 'none';
             timerElement.style.display = 'none';
-            sendResultBtn.style.display = 'inline-block';
+            sendResultBtn.classList.remove('hide'); // Added line to show sendResultBtn
             const quizResult = {
                 name: nameInput.value,
                 nim: nim,
