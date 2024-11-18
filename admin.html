@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .navbar {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            width: 100px;
+            margin-left: 20px;
+        }
+        .admin-greeting {
+            margin-right: 20px;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            color: white;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+        }
+        .btn-danger {
+            background-color: #f44336;
+        }
+        .btn-info {
+            background-color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img src="https://example.com/uinssc-logo.png" alt="UINSSC Logo" class="logo">
+        <div class="admin-greeting" id="adminGreeting"></div>
+    </div>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <button id="showDataBtn" class="btn btn-primary">Tampilkan Data</button>
+        <button id="downloadPdfBtn" class="btn btn-info">Download PDF</button>
+        <table id="quizDataTable">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>NIM</th>
+                    <th>Kelas</th>
+                    <th>Semester</th>
+                    <th>Benar</th>
+                    <th>Salah</th>
+                    <th>Pelanggaran</th>
+                    <th>Nilai</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="quizDataBody"></tbody>
+        </table>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+
+        const adminName = localStorage.getItem('adminName') || 'Admin';
+        document.getElementById('adminGreeting').textContent = `Hai ${adminName}`;
+
+        const showDataBtn = document.getElementById('showDataBtn');
+        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+        const quizDataBody = document.getElementById('quizDataBody');
+
+        function showData() {
+            const quizData = JSON.parse(localStorage.getItem('quizData')) || [];
+            quizDataBody.innerHTML = '';
+            quizData.forEach((data, index) => {
+                const row = `
+                    <tr>
+                        <td>${data.name}</td>
+                        <td>${data.nim}</td>
+                        <td>${data.kelas}</td>
+                        <td>${data.semester}</td>
+                        <td>${data.correct}</td>
+                        <td>${data.incorrect}</td>
+                        <td>${data.violations}</td>
+                        <td>${data.score.toFixed(2)}%</td>
+                        <td><button class="btn btn-danger" onclick="deleteData(${index})">Hapus</button></td>
+                    </tr>
+                `;
+                quizDataBody.innerHTML += row;
+            });
+        }
+
+        function deleteData(index) {
+            const quizData = JSON.parse(localStorage.getItem('quizData')) || [];
+            quizData.splice(index, 1);
+            localStorage.setItem('quizData', JSON.stringify(quizData));
+            showData();
+        }
+
+        function downloadPdf() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const quizData = JSON.parse(localStorage.getItem('quizData')) || [];
+            
+            doc.autoTable({
+                head: [['Nama', 'NIM', 'Kelas', 'Semester', 'Benar', 'Salah', 'Pelanggaran', 'Nilai']],
+                body: quizData.map(data => [
+                    data.name,
+                    data.nim,
+                    data.kelas,
+                    data.semester,
+                    data.correct,
+                    data.incorrect,
+                    data.violations,
+                    `${data.score.toFixed(2)}%`
+                ]),
+                styles: { fontSize: 8, cellPadding: 2 },
+                headStyles: { fillColor: [76, 175, 80] },
+            });
+
+            doc.save('quiz_results.pdf');
+        }
+
+        showDataBtn.addEventListener('click', showData);
+        downloadPdfBtn.addEventListener('click', downloadPdf);
+    </script>
+</body>
+  </html>
