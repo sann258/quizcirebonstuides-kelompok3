@@ -143,7 +143,6 @@
     </div>
     <div class="container">
         <h1>Admin Dashboard</h1>
-        <button id="refreshDataBtn" class="btn">Refresh Data</button>
         <button id="downloadPdfBtn" class="btn">Download PDF</button>
         <table id="dataTable">
             <thead>
@@ -176,13 +175,11 @@
         const adminName = localStorage.getItem('adminName') || 'Admin';
         document.getElementById('welcomeMessage').textContent = `Hai ${adminName}`;
 
-        const refreshDataBtn = document.getElementById('refreshDataBtn');
         const downloadPdfBtn = document.getElementById('downloadPdfBtn');
         const quizDataBody = document.getElementById('tableBody');
 
         function showData() {
             const quizData = JSON.parse(localStorage.getItem('quizData')) || [];
-            quizData.sort((a, b) => b.score - a.score); // Sort by score from highest to lowest
             quizDataBody.innerHTML = '';
             quizData.forEach((data, index) => {
                 const row = `
@@ -215,7 +212,8 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const quizData = JSON.parse(localStorage.getItem('quizData')) || [];
-            quizData.sort((a, b) => b.score - a.score); // Sort by score from highest to lowest
+            
+            doc.text("Quiz Results", 14, 15);
             
             doc.autoTable({
                 head: [['No.', 'Nama', 'NIM', 'Kelas', 'Semester', 'Benar', 'Salah', 'Pelanggaran', 'Nilai', 'Waktu Pengiriman']],
@@ -231,6 +229,7 @@
                     `${data.score.toFixed(2)}%`,
                     data.submissionTime || 'N/A'
                 ]),
+                startY: 20,
                 styles: { fontSize: 8, cellPadding: 2 },
                 headStyles: { fillColor: [76, 175, 80] },
             });
@@ -289,7 +288,6 @@
             }
         }
 
-        refreshDataBtn.addEventListener('click', showData);
         downloadPdfBtn.addEventListener('click', downloadPdf);
 
         // Create trading background
@@ -312,11 +310,14 @@
 
         createTradingBackground();
 
-        // Initial data load
-        showData();
+        function autoRefresh() {
+            showData();
+            setTimeout(autoRefresh, 5000); // Refresh every 5 seconds
+        }
 
-        // Auto-refresh data every 3 seconds
-        setInterval(showData, 3000);
+        // Initial data load and start auto-refresh
+        showData();
+        autoRefresh();
     </script>
 </body>
 </html>
