@@ -697,15 +697,32 @@
             resultContainer.classList.remove('hide');
             resetContainer.classList.remove('hide');
 
-            // Save quiz data to localStorage
-            const existingData = JSON.parse(localStorage.getItem('quizData')) || [];
-            existingData.push(quizResult);
-            localStorage.setItem('quizData', JSON.stringify(existingData));
+            // Simpan ke local storage admin
+            const adminQuizData = JSON.parse(localStorage.getItem('adminQuizData')) || [];
+            adminQuizData.push(quizResult);
+            localStorage.setItem('adminQuizData', JSON.stringify(adminQuizData));
         }
 
         function submitQuizResults() {
+            const quizResult = {
+                name: nameInput.value,
+                nim: nim,
+                kelas: kelas,
+                semester: semester,
+                correct: score,
+                incorrect: quizData.length - score,
+                violations: violations,
+                score: (score / quizData.length) * 100,
+                submissionTime: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })
+            };
+
+            // Simpan ke local storage admin
+            const adminQuizData = JSON.parse(localStorage.getItem('adminQuizData')) || [];
+            adminQuizData.push(quizResult);
+            localStorage.setItem('adminQuizData', JSON.stringify(adminQuizData));
+
             displayResult();
-            alert('Hasil quiz telah berhasil dikirim!');
+            alert('Hasil quiz telah berhasil dikirim ke admin!');
         }
 
         function shareToWhatsApp() {
@@ -773,17 +790,4 @@
         });
 
         // Prevent accidental page refresh
-        window.addEventListener('beforeunload', (event) => {
-            if (!quizCompleted) {
-                event.preventDefault();
-                event.returnValue = '';
-            }
-        });
-
-        // Check if quiz has been completed before
-        if (localStorage.getItem('quizCompleted') === 'true') {
-            showCompletionNotification();
-        }
-    </script>
-</body>
-</html>
+<merged_code>
