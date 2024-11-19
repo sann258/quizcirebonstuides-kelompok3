@@ -179,7 +179,7 @@
         const quizDataBody = document.getElementById('tableBody');
 
         function showData() {
-            const quizData = JSON.parse(localStorage.getItem('quizData')) || [];
+            const quizData = JSON.parse(localStorage.getItem('adminQuizData')) || [];
             quizDataBody.innerHTML = '';
             quizData.forEach((data, index) => {
                 const row = `
@@ -202,16 +202,16 @@
         }
 
         function deleteData(index) {
-            const quizData = JSON.parse(localStorage.getItem('quizData')) || [];
+            const quizData = JSON.parse(localStorage.getItem('adminQuizData')) || [];
             quizData.splice(index, 1);
-            localStorage.setItem('quizData', JSON.stringify(quizData));
+            localStorage.setItem('adminQuizData', JSON.stringify(quizData));
             showData();
         }
 
         function downloadPdf() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const quizData = JSON.parse(localStorage.getItem('quizData')) || [];
+            const quizData = JSON.parse(localStorage.getItem('adminQuizData')) || [];
             
             doc.text("Quiz Results", 14, 15);
             
