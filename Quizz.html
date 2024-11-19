@@ -497,6 +497,7 @@
         }
 
         function startQuiz() {
+            console.log("startQuiz function called");
             nim = nimInput.value.trim();
             kelas = kelasInput.value.trim();
             semester = semesterInput.value.trim();
@@ -506,6 +507,7 @@
                 return;
             }
 
+            console.log("All fields filled, starting quiz");
             quizForm.classList.add('hide');
             notification.textContent = 'Quiz akan dimulai dalam 5 detik. Bersiaplah!';
             notification.classList.remove('hide');
@@ -790,4 +792,19 @@
         });
 
         // Prevent accidental page refresh
-<merged_code>
+        window.addEventListener('beforeunload', (event) => {
+            if (!quizCompleted) {
+                event.preventDefault();
+                event.returnValue = '';
+            }
+        });
+
+        // Check if quiz has been completed before
+        if (localStorage.getItem('quizCompleted') === 'true') {
+            showCompletionNotification();
+        }
+
+        console.log("Script loaded successfully");
+    </script>
+</body>
+</html>
