@@ -242,9 +242,9 @@
                 symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
                 symbol.style.color = colors[Math.floor(Math.random() * colors.length)];
                 symbol.style.position = 'absolute';
-                symbol.style.left = ${Math.random() * 100}%;
-                symbol.style.top = ${Math.random() * 100}%;
-                symbol.style.fontSize = ${Math.random() * 20 + 10}px;
+                symbol.style.left = `${Math.random() * 100}%`;
+                symbol.style.top = `${Math.random() * 100}%`;
+                symbol.style.fontSize = `${Math.random() * 20 + 10}px`;
                 symbol.style.opacity = '0.5';
                 background.appendChild(symbol);
             }
@@ -260,9 +260,9 @@
             for (let i = 0; i < moneyCount; i++) {
                 const money = document.createElement('div');
                 money.classList.add('money');
-                money.style.left = ${Math.random() * 100}%;
-                money.style.animationDuration = ${Math.random() * 3 + 2}s;
-                money.style.animationDelay = ${Math.random() * 5}s;
+                money.style.left = `${Math.random() * 100}%`;
+                money.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                money.style.animationDelay = `${Math.random() * 5}s`;
                 moneyRain.appendChild(money);
             }
         }
@@ -341,7 +341,7 @@
         }
 
         function updateTimerDisplay() {
-            timerElement.textContent = Waktu tersisa: ${timeLeft} detik;
+            timerElement.textContent = `Waktu tersisa: ${timeLeft} detik`;
         }
 
         function startViolationDetection() {
@@ -415,7 +415,7 @@
 
         function showFeedback(isCorrect) {
             feedbackElement.textContent = isCorrect ? 'Anjaaay! kasih paham puh🙏🏻!' : 'Awokawokawok! Tutor Dek🗿!';
-            feedbackElement.className = feedback ${isCorrect ? 'correct' : 'incorrect'};
+            feedbackElement.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
             feedbackElement.classList.remove('hide');
             setTimeout(() => {
                 feedbackElement.classList.add('hide');
@@ -484,15 +484,15 @@
             };
 
             document.getElementById('resultName').textContent = quizResult.name;
-            document.getElementById('resultNIM').textContent = NIM: ${quizResult.nim};
-            document.getElementById('resultKelas').textContent = Kelas: ${quizResult.kelas};
-            document.getElementById('resultJurusan').textContent = Jurusan: ${quizResult.jurusan};
-            document.getElementById('resultSemester').textContent = Semester: ${quizResult.semester};
-            document.getElementById('resultScore').textContent = Skor: ${quizResult.score.toFixed(2)}%;
-            document.getElementById('resultCorrect').textContent = Benar: ${quizResult.correct};
-            document.getElementById('resultIncorrect').textContent = Salah: ${quizResult.incorrect};
-            document.getElementById('resultViolations').textContent = Pelanggaran: ${quizResult.violations};
-            document.getElementById('resultTime').textContent = Waktu Selesai: ${quizResult.submissionTime};
+            document.getElementById('resultNIM').textContent = `NIM: ${quizResult.nim}`;
+            document.getElementById('resultKelas').textContent = `Kelas: ${quizResult.kelas}`;
+            document.getElementById('resultJurusan').textContent = `Jurusan: ${quizResult.jurusan}`;
+            document.getElementById('resultSemester').textContent = `Semester: ${quizResult.semester}`;
+            document.getElementById('resultScore').textContent = `Skor: ${quizResult.score.toFixed(2)}%`;
+            document.getElementById('resultCorrect').textContent = `Benar: ${quizResult.correct}`;
+            document.getElementById('resultIncorrect').textContent = `Salah: ${quizResult.incorrect}`;
+            document.getElementById('resultViolations').textContent = `Pelanggaran: ${quizResult.violations}`;
+            document.getElementById('resultTime').textContent = `Waktu Selesai: ${quizResult.submissionTime}`;
 
             resetContainer.classList.remove('hide');
 
@@ -512,7 +512,7 @@
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         const userPhoto = document.getElementById('userPhoto');
-                        userPhoto.innerHTML = <img src="${e.target.result}" alt="User Photo">;
+                        userPhoto.innerHTML = `<img src="${e.target.result}" alt="User Photo">`;
                     };
                     reader.readAsDataURL(file);
                 }
