@@ -11,7 +11,242 @@
     <link rel="icon" type="image/png" sizes="64x64" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqo_EQJKSEslo9GFhkfQOKda0RcsAgbdvC0r9nRcyP8bNuUr8c9K0f9Zg&s=10">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-color: #0a0e17;
+            --text-color: #e0e0e0;
+            --primary-color: #4caf50;
+            --secondary-color: #ff9800;
+            --accent-color: #2196f3;
+            --error-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 750px;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trading-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+            background: rgba(10, 14, 23, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            max-height: 80vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #candlestick-chart {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .hide {
+            display: none;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .question {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .feedback {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .feedback.correct {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--primary-color);
+        }
+
+        .feedback.incorrect {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--error-color);
+        }
+
+        #result {
+            text-align: center;
+        }
+
+        .crypto-symbol {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .money-rain {
+            position: fixed;
+            top: -50px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .money {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234caf50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/></svg>');
+            background-size: contain;
+            opacity: 0.5;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .violation-notice {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--error-color);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        #resultCard {
+            background: black;
+            border-radius: 10px;
+            padding: 20px;
+            color: #4caf50;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .result-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="trading-background"></div>
@@ -48,11 +283,8 @@
             </ul>
             <button id="understandButton" class="button">Shap Ketua</button>
         </div>
-        <div id="nameContainer" class="hide">
-            <input type="text" id="nameInput" placeholder="Masukkan nama anda" required>
-            <button id="startButton" class="button">Start</button>
-        </div>
         <div id="quizForm" class="hide">
+            <input type="text" id="nameInput" placeholder="Masukkan nama anda" required>
             <input type="text" id="nimInput" placeholder="Masukkan NIM" required>
             <input type="text" id="kelasInput" placeholder="Masukkan Kelas" required>
             <input type="text" id="jurusanInput" placeholder="Masukkan Jurusan" required>
@@ -65,9 +297,6 @@
         <div id="feedback" class="feedback hide"></div>
         <div id="result" class="hide">
             <div id="resultCard">
-                <div id="userPhoto">
-                    <span>📷</span>
-                </div>
                 <h2 id="resultName"></h2>
                 <p id="resultNIM"></p>
                 <p id="resultKelas"></p>
@@ -80,8 +309,8 @@
                 <p id="resultTime"></p>
             </div>
             <div class="result-buttons">
-                <button id="capturePhotoBtn" class="button">Ambil Foto</button>
                 <button id="downloadResultBtn" class="button">Download Hasil</button>
+                <button id="shareWhatsAppBtn" class="button">Share ke WhatsApp</button>
             </div>
         </div>
         <button id="submit" class="button hide">Kirim Jawaban</button>
@@ -152,10 +381,8 @@
         const tokenButton = document.getElementById('tokenButton');
         const rulesContainer = document.getElementById('rulesContainer');
         const understandButton = document.getElementById('understandButton');
-        const nameContainer = document.getElementById('nameContainer');
-        const nameInput = document.getElementById('nameInput');
-        const startButton = document.getElementById('startButton');
         const quizForm = document.getElementById('quizForm');
+        const nameInput = document.getElementById('nameInput');
         const nimInput = document.getElementById('nimInput');
         const kelasInput = document.getElementById('kelasInput');
         const jurusanInput = document.getElementById('jurusanInput');
@@ -171,9 +398,8 @@
         const resetCodeInput = document.getElementById('resetCodeInput');
         const resetCodeButton = document.getElementById('resetCodeButton');
 
-        const capturePhotoBtn = document.getElementById('capturePhotoBtn');
         const downloadResultBtn = document.getElementById('downloadResultBtn');
-        
+        const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
 
         let currentQuestion = 0;
         let score = 0;
@@ -182,7 +408,7 @@
         let timeLeft = 30;
         let quizCompleted = false;
         let violations = 0;
-        let nim, kelas, jurusan, semester;
+        let name, nim, kelas, jurusan, semester;
 
         // Candlestick chart
         const canvas = document.getElementById('candlestick-chart');
@@ -207,22 +433,22 @@
             ctx.stroke();
 
             // Draw the body
-            ctx.fillRect(x - candleWidth / 2, open, candleWidth, close - open);
+            ctx.fillRect(x - candleWidth / 2, Math.min(open, close), candleWidth, Math.abs(close - open));
         }
 
         function drawChart() {
             resizeCanvas();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const candleCount = 20;
+            const candleCount = 28;
             const candleSpacing = canvas.width / candleCount;
 
             for (let i = 0; i < candleCount; i++) {
-                const x = i * candleSpacing + candleSpacing / 2;
+                const x = i * candleSpacing + candleSpacing / 6;
                 const open = Math.random() * canvas.height;
                 const close = Math.random() * canvas.height;
-                const high = Math.max(open, close) - Math.random() * 20;
-                const low = Math.min(open, close) + Math.random() * 20;
+                const high = Math.min(open, close) - Math.random() * 20;
+                const low = Math.max(open, close) + Math.random() * 20;
 
                 drawCandlestick(x, open, close, high, low);
             }
@@ -288,28 +514,24 @@
                 tokenContainer.classList.add('hide');
                 rulesContainer.classList.remove('hide');
             } else {
-                alert('Token ngga valid / Token belum dimasukkin.');
+                alert('Token ngga valid, NT DEK🗿🙏🏻.');
             }
         }
 
-        function showNameInput() {
-            rulesContainer.classList.add('hide');
-            nameContainer.classList.remove('hide');
-        }
-
         function showQuizForm() {
-            nameContainer.classList.add('hide');
+            rulesContainer.classList.add('hide');
             quizForm.classList.remove('hide');
         }
 
         function startQuiz() {
+            name = nameInput.value.trim();
             nim = nimInput.value.trim();
             kelas = kelasInput.value.trim();
             jurusan = jurusanInput.value.trim();
             semester = semesterInput.value.trim();
 
-            if (nim === '' || kelas === '' || jurusan === '' || semester === '') {
-                alert('Mohon isi semanya ya, pake yang asli:v.');
+            if (name === '' || nim === '' || kelas === '' || jurusan === '' || semester === '') {
+                alert('Mohon isi semua field.');
                 return;
             }
 
@@ -455,10 +677,6 @@
             quizContainer.appendChild(questionElement);
             quizContainer.appendChild(optionsElement);
 
-            submitButton.disabled = true;
-        }
-
-        function enableSubmitButton() {
             submitButton.disabled = false;
         }
 
@@ -471,7 +689,7 @@
             resultContainer.classList.remove('hide');
 
             const quizResult = {
-                name: nameInput.value,
+                name: name,
                 nim: nim,
                 kelas: kelas,
                 jurusan: jurusan,
@@ -502,35 +720,40 @@
             localStorage.setItem('quizData', JSON.stringify(existingData));
         }
 
-        function capturePhoto() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const userPhoto = document.getElementById('userPhoto');
-                        userPhoto.innerHTML = `<img src="${e.target.result}" alt="User Photo">`;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
+        function downloadResult() {
+            html2canvas(document.getElementById('resultCard')).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'quiz-result.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
         }
 
-        document.getElementById('downloadResultBtn').addEventListener('click', () => {
-    html2canvas(document.getElementById('resultCard'), { 
-        scale: 4, // Tingkatkan skala untuk resolusi lebih tinggi (3x dari ukuran asli)
-        useCORS: true // Mengizinkan sumber eksternal jika gambar diambil dari URL
-    }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'quiz-result-hd.jpg'; // Nama file hasil download
-        link.href = canvas.toDataURL('image/jpeg', 1.0); // Kompresi minimal untuk kualitas maksimal
-        link.click();
-    });
-});
+        function shareToWhatsApp() {
+            const quizResult = {
+                name: name,
+                nim: nim,
+                kelas: kelas,
+                jurusan: jurusan,
+                semester: semester,
+                violations: violations,
+                score: (score / quizData.length) * 100
+            };
+
+            const message = `
+Nama: ${quizResult.name}
+NIM: ${quizResult.nim}
+Kelas: ${quizResult.kelas}
+Jurusan: ${quizResult.jurusan}
+Semester: ${quizResult.semester}
+Pelanggaran: ${quizResult.violations}
+Nilai: ${quizResult.score.toFixed(2)}%
+            `;
+
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
         function showCompletionNotification() {
             notification.textContent = 'Anda sudah menyelesaikan Quiz hari ini!';
             notification.classList.remove('hide');
@@ -549,7 +772,6 @@
             groupMembersContainer.classList.remove('hide');
             tokenContainer.classList.add('hide');
             rulesContainer.classList.add('hide');
-            nameContainer.classList.add('hide');
             quizForm.classList.add('hide');
             resultContainer.classList.add('hide');
             resetContainer.classList.add('hide');
@@ -559,13 +781,11 @@
             kelasInput.value = '';
             jurusanInput.value = '';
             semesterInput.value = '';
-            document.getElementById('userPhoto').innerHTML = '<span>📷</span>';
         }
 
         okButton.addEventListener('click', showTokenInput);
         tokenButton.addEventListener('click', verifyToken);
-        understandButton.addEventListener('click', showNameInput);
-        startButton.addEventListener('click', showQuizForm);
+        understandButton.addEventListener('click', showQuizForm);
         startQuizBtn.addEventListener('click', startQuiz);
         submitButton.addEventListener('click', (e) => {
             e.preventDefault();
@@ -573,9 +793,10 @@
                 checkAnswer();
             }
         });
-        quizContainer.addEventListener('change', enableSubmitButton);
+        quizContainer.addEventListener('change', () => {
+            submitButton.disabled = false;
+        });
 
-        capturePhotoBtn.addEventListener('click', capturePhoto);
         downloadResultBtn.addEventListener('click', downloadResult);
         shareWhatsAppBtn.addEventListener('click', shareToWhatsApp);
 
